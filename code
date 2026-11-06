@@ -1,0 +1,184 @@
+#Imports the datetime for the receipt
+import datetime
+# Dictionary for the products the user can purchase
+products = {
+    "Chips": 2.00,
+    "Soda": 2.50,
+    "Water":1.50,
+    "Soup":3.00,
+    "Candy":2.25   
+}
+# A shopping cart for the user to store items in
+shopping_cart = {
+
+}
+# Displays the products for the user to see what they would like to buy
+def display_products():
+    print("")
+    print("========== AVAILABLE PRODUCTS ==========")
+    for i, (name, price) in enumerate(products.items()):
+        print(f"{i +1}. {name}     ${price:.2f}")
+
+#Adds the products that the user asks for
+def add_products():
+    print("Which product would you like to add?")
+    for i, (name, price) in enumerate(products.items()):
+        print(f"{i +1}. {name}     ${price: .2f}")
+            
+    product_name = input("What product do you want?: ")
+    
+    while product_name not in products:
+        print("Invalid option! Pick again!") 
+        product_name = input("What product do you want?: ")
+    
+    quantities = int(input("How many do you want?: "))
+    while quantities <= 0:
+        print("Please add a value greater than zero!")
+        quantities = int(input("How many do you want?: "))
+
+    if product_name in shopping_cart:
+        shopping_cart[product_name] += quantities
+    else:
+        shopping_cart[product_name] = quantities
+# Removes any of the products in the cart that the user does not want
+def remove_products(quantities):
+    print("========== YOUR SHOPPING CART ==========")
+    if len(shopping_cart) == 0:
+        print("Your cart is empty!")
+    
+    if len(shopping_cart) >= 1:
+        for i, (name,price) in enumerate(products.items()):
+            print(f"{i + 1}. {name}   ${price:.2f}")
+        product_name = input("Which item would you like to remove?: ")
+        while product_name not in shopping_cart:
+            print("Invalid option! Pick again!") 
+            product_name = input("Which item would you like to remove?: ")
+        quantities = int(input("How many would you like to remove?: "))
+        while quantities <= 0:
+            print("Please add a value greater than zero!")
+            quantities = int(input("How many do you want?: "))
+        while quantities > shopping_cart[product_name]:
+            print("You don't have that many items in your cart!")
+            quantities = int(input("How many would you like to remove?: "))
+        shopping_cart[product_name] -= quantities
+        if shopping_cart[product_name] <= 0:
+            del shopping_cart[product_name]
+        print(f"{quantities} {product_name} were removed from your cart!")
+# displays the items that are in the shopping cart for the user
+def display_cart(total_items, subtotal):
+    total_items = 0
+    subtotal = 0
+    for item in shopping_cart:
+        subtotal += products[item] * shopping_cart[item]
+    print("========== YOUR SHOPPING CART ==========")
+    print("Product    Unit Price    Quantity      Line Total")
+    for i, (name, quantities) in enumerate(shopping_cart.items()):
+        total = products[name] * quantities
+        total_items += quantities
+        print(f"{i + 1}. {name}    ${products[name]: .2f}           {quantities}         ${total: .2f}")
+    
+    print(f"Total Items: {total_items}")
+    print(f"Subtotal: ${subtotal:.2f}")
+
+# Calculates the current subtotal of what is in the cart
+def calculate_subtotal(subtotal):
+    subtotal = 0
+    for item in shopping_cart:
+        subtotal += products[item] * shopping_cart[item]
+        print(f"The current subtotal is {subtotal:.2f}")
+    return subtotal
+
+# Checkout for the items and applies discounts and prints a final receipt
+def calculate_total(total_items,subtotal):
+    total_items = 0
+    subtotal = 0
+    for item in shopping_cart:
+        subtotal += products[item] * shopping_cart[item]
+    print("========== RECEIPT ==========")
+    print("")
+    print(f"Date: {datetime.date.today()}")
+    print("")
+    print("Product    Unit Price    Quantity      Line Total")
+    for i, (name, quantities) in enumerate(shopping_cart.items()):
+        total_items += quantities
+        line_total = products[name] * quantities
+        print(f"{i + 1}. {name}    ${products[name]: .2f}           {quantities}         ${line_total: .2f}")
+    
+    print("")
+    print(f" Subtotal:           ${subtotal:.2f}")
+    print("")
+        # Starts to check the price for the discount
+    if total_items >= 40:
+        print("Discount:      15%")
+        saved = subtotal * 0.15
+        print(f"Amount saved:    ${saved:.2f}")
+        total = subtotal - saved
+    elif total_items >= 20:
+        print("Discount:     10%")
+        saved = subtotal * 0.10
+        print(f"Amount saved:  ${saved:.2f}")
+        total = subtotal - saved
+    elif total_items >= 10:
+        print("Discount:      5%")
+        saved = subtotal * 0.05
+        print(f"Amount saved:    ${saved:.2f}")
+        total = subtotal - saved
+    else:
+        print("No discount")
+        print("No amount saved")
+        total = subtotal
+
+    print("")
+    print(f"Final Total: ${total:.2f}")
+    print("Thank you for shopping")
+    return total
+
+while True:
+    print("========== SMART SHOPPING CART ==========")
+    print("1. View Available Products")
+    print("2. Add Product to Cart")
+    print("3. Remove Product from Cart")
+    print("4. View Shopping Cart")
+    print("5. View Current Total")
+    print("6. Checkout")
+    print("")
+    choice = int(input("Enter your choice: "))
+    # Checks if it is a valid choice 
+    while choice > 6 or choice < 1:
+        print("That is not a valid choice please pick something in the program.")
+        choice = int(input("Enter your choice: "))
+
+    total_items = 0
+    subtotal = 0
+    price = 0
+    quantities = 0
+    if choice == 1:
+        display_products()
+
+    elif choice == 2:
+        add_products()
+
+    elif choice == 3:
+        remove_products(quantities)
+
+    elif choice == 4:
+        display_cart(total_items, subtotal)
+             
+        
+    
+    elif choice == 5:
+        calculate_subtotal(subtotal)
+        subtotal = 0
+        for item in shopping_cart:
+            subtotal += products[item] * shopping_cart[item]
+            
+        print(f"The current subtotal is ${subtotal:.2f}")
+
+         
+
+    elif choice == 6:
+        if len(shopping_cart) == 0:
+            print("Your Cart is empty!")
+        else:
+            calculate_total(total_items, subtotal)
+            break
